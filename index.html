@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stechtic User Panel</title>
+  <style>
+    :root {
+      --bg-color: #f5f5f5;
+      --container-bg: #fff;
+      --text-color: #212529;
+      --input-bg: #fff;
+      --input-border: #ccc;
+      --btn-bg: #0275d8;
+      --btn-hover-bg: #025aa5;
+      --footer-bg: #f8f9fa;
+      --footer-text: #6c757d;
+      --nav-bg: #f8f9fa;
+      --nav-text: #212529;
+    }
+    body.dark {
+      --bg-color: #121212;
+      --container-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --input-bg: #2a2a2a;
+      --input-border: #555;
+      --btn-bg: #003577;
+      --btn-hover-bg: #002355;
+      --footer-bg: #1e1e1e;
+      --footer-text: #aaa;
+      --nav-bg: #1e1e1e;
+      --nav-text: #e0e0e0;
+    }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex; flex-direction: column;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    nav.navbar {
+      height: 56px;
+      background: var(--nav-bg);
+      color: var(--nav-text);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      font-weight: 600;
+      font-size: 1.25rem;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      justify-content: space-between;
+    }
+    nav button#theme-toggle {
+      background: none;
+      border: none;
+      color: var(--nav-text);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 6px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    nav button#theme-toggle:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+    main.container {
+      flex: 1;
+      max-width: 400px;
+      margin: 20px auto 70px auto;
+      background: var(--container-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-sizing: border-box;
+      width: 90%;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    input, button, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 1px solid var(--input-border);
+      border-radius: 5px;
+      box-sizing: border-box;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    button {
+      background-color: var(--btn-bg);
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: var(--btn-hover-bg);
+    }
+    #attendance-list {
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      background-color: var(--container-bg);
+      border-radius: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #attendance-list ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+    #quote-container {
+  margin-top: 15px;
+  font-style: italic;
+  color: #555;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 10px 10px 55px 10px; /* bottom padding added for footer clearance */
+  box-sizing: border-box;
+}
+
+    #quote-container small {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: #888;
+    }
+    footer.footer {
+      height: 56px;
+      background-color: var(--footer-bg);
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--footer-text);
+      user-select: none;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    @media (max-width: 400px) {
+      main.container {
+        margin: 10px auto 70px auto;
+        padding: 15px;
+      }
+      input, button, textarea {
+        font-size: 1.1rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    Stechtic
+    <button id="theme-toggle" aria-label="Toggle dark mode">Dark Mode</button>
+  </nav>
+
+  <main class="container">
+    <!-- Login Section -->
+    <div id="auth-section">
+      <h2>Login</h2>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Attendance Section -->
+    <div id="attendance-section" style="display:none;">
+      <h2>Welcome, <span id="user-name"></span></h2>
+      <input type="text" id="name" placeholder="Enter your name" />
+      <textarea id="comment" placeholder="Optional comment" rows="3"></textarea>
+      <button onclick="markAttendance()">Mark Attendance</button>
+      <button onclick="logout()">Logout</button>
+
+      <div id="attendance-list"></div>
+      <div id="quote-container">
+        "Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." 
+        <small>— Thomas Alva Edison</small>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 Stechtic. All rights reserved.
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVqO_A0CFQERASJyUJf1brk2ke8ZUguhA",
+      authDomain: "language-1e856.firebaseapp.com",
+      databaseURL: "https://language-1e856-default-rtdb.firebaseio.com",
+      projectId: "language-1e856",
+      storageBucket: "language-1e856.firebasestorage.app",
+      messagingSenderId: "1011104666699",
+      appId: "1:1011104666699:web:83222c841d90ec3502a9ce",
+      measurementId: "G-963KLS1HKK"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let currentUser = null;
+
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    // Initialize theme based on localStorage or default
+    const initTheme = () => {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if(savedTheme === 'dark'){
+        document.body.classList.add('dark');
+        themeToggleBtn.textContent = 'Light Mode';
+      } else {
+        document.body.classList.remove('dark');
+        themeToggleBtn.textContent = 'Dark Mode';
+      }
+    }
+    initTheme();
+
+    themeToggleBtn.addEventListener('click', () => {
+      if(document.body.classList.contains('dark')){
+        document.body.classList.remove('dark');
+        themeToggleBtn.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.body.classList.add('dark');
+        themeToggleBtn.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    async function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        alert('Please enter both email and password');
+        return;
+      }
+
+      try {
+        const userSnapshot = await db.collection('users').where('email', '==', email).limit(1).get();
+
+        if (userSnapshot.empty) {
+          alert('Email not found.');
+          return;
+        }
+
+        const userDoc = userSnapshot.docs[0];
+        const userData = userDoc.data();
+
+        if(userData.password !== password){
+          alert('Incorrect password.');
+          return;
+        }
+
+        currentUser = { ...userData, id: userDoc.id };
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('attendance-section').style.display = 'block';
+        document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
+
+        loadAttendance();
+
+      } catch (error) {
+        alert('Login error: ' + error.message);
+        console.error(error);
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('auth-section').style.display = 'block';
+      document.getElementById('attendance-section').style.display = 'none';
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('user-name').textContent = '';
+      document.getElementById('attendance-list').innerHTML = '';
+      document.getElementById('name').value = '';
+      document.getElementById('comment').value = '';
+    }
+
+    async function markAttendance() {
+      if (!currentUser) {
+        alert('Not logged in');
+        return;
+      }
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+
+      const nameInput = document.getElementById('name').value.trim();
+      if(!nameInput){
+        alert('Please enter your name before marking attendance.');
+        return;
+      }
+      const commentInput = document.getElementById('comment').value.trim();
+
+      try {
+        const attendanceSnapshot = await db.collection('attendance')
+          .where('userId', '==', currentUser.id)
+          .where('date', '==', today)
+          .limit(1)
+          .get();
+
+        if (!attendanceSnapshot.empty) {
+          alert('Attendance already marked for today.');
+          return;
+        }
+
+        await db.collection('attendance').add({
+          userId: currentUser.id,
+          email: currentUser.email,
+          name: nameInput,
+          comment: commentInput || null,
+          date: today,
+          time: now.toLocaleTimeString()
+        });
+
+        alert('Attendance marked!');
+        loadAttendance();
+
+        document.getElementById('name').value = '';
+        document.getElementById('comment').value = '';
+
+      } catch(error) {
+        console.error('Error marking attendance:', error);
+        alert('Failed to mark attendance: ' + error.message);
+      }
+    }
+
+    async function loadAttendance() {
+      if (!currentUser) return;
+
+      const attendanceList = document.getElementById('attendance-list');
+      // attendanceList.innerHTML = '<h3>Your Attendance Records:</h3>';
+
+      try {
+        const recordsSnapshot = await db.collection('attendance')
+          .where('userId', '==', currentUser.id)
+          .orderBy('date', 'desc')
+          .limit(20)
+          .get();
+
+        if (recordsSnapshot.empty) {
+          // attendanceList.innerHTML += '<p>No attendance records found.</p>';
+          return;
+        }
+
+        const ul = document.createElement('ul');
+        recordsSnapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement('li');
+          li.textContent = `${data.date} at ${data.time} | Name: ${data.name}` + (data.comment ? ` | Comment: ${data.comment}` : '');
+          ul.appendChild(li);
+        });
+        attendanceList.appendChild(ul);
+
+      } catch(error) {
+        // console.error('Error loading attendance:', error);
+        // attendanceList.innerHTML = '<p>Could not load attendance records.</p>';
+      }
+    }
+  </script>
+
+</body>
+</html>
