@@ -365,7 +365,8 @@
         recordsSnapshot.forEach(doc => {
           const data = doc.data();
           const li = document.createElement('li');
-          li.textContent = `${data.date} at ${data.time} | Name: ${data.name}` + (data.comment ? ` | Comment: ${data.comment}` : '');
+         li.textContent = `${data.date} at ${data.time} | Name: ${data.name} | Email: ${data.email}` + (data.comment ? ` | Comment: ${data.comment}` : '');
+
           ul.appendChild(li);
         });
         attendanceList.appendChild(ul);
@@ -379,3 +380,4 @@
 
 </body>
 </html>
+
