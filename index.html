@@ -124,7 +124,7 @@
       color: #555;
       font-size: 0.95rem;
       text-align: center;
-      padding: 10px 10px 55px 10px; /* footer clearance */
+      padding: 10px 10px 55px 10px;
       box-sizing: border-box;
     }
     #quote-container small {
@@ -243,22 +243,22 @@
       }
     });
 
-    // Load random quote function
+    // Load random quote function (ZenQuotes API)
     async function loadQuote() {
       try {
-        const response = await fetch("https://api.quotable.io/random");
+        const response = await fetch("https://zenquotes.io/api/random");
         const data = await response.json();
-        document.getElementById("quote").innerText = `"${data.content}"`;
-        document.getElementById("author").innerText = `— ${data.author}`;
+        document.getElementById("quote").innerText = `"${data[0].q}"`;
+        document.getElementById("author").innerText = `— ${data[0].a}`;
       } catch (error) {
         const backups = [
-          {content: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt"},
-          {content: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill"},
-          {content: "It always seems impossible until it’s done.", author: "Nelson Mandela"}
+          {q: "Do what you can, with what you have, where you are.", a: "Theodore Roosevelt"},
+          {q: "Success is not final, failure is not fatal: it is the courage to continue that counts.", a: "Winston Churchill"},
+          {q: "It always seems impossible until it’s done.", a: "Nelson Mandela"}
         ];
         const random = backups[Math.floor(Math.random() * backups.length)];
-        document.getElementById("quote").innerText = `"${random.content}"`;
-        document.getElementById("author").innerText = `— ${random.author}`;
+        document.getElementById("quote").innerText = `"${random.q}"`;
+        document.getElementById("author").innerText = `— ${random.a}`;
       }
     }
 
@@ -294,7 +294,7 @@
         document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
 
         loadAttendance();
-        loadQuote(); // get new fresh quote each login
+        loadQuote(); // fetch from ZenQuotes after login
 
       } catch (error) {
         alert('Login error: ' + error.message);
