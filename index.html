@@ -119,21 +119,30 @@
       margin: 0;
     }
     #quote-container {
-  margin-top: 15px;
-  font-style: italic;
-  color: #555;
-  font-size: 0.95rem;
-  text-align: center;
-  padding: 10px 10px 55px 10px; /* bottom padding added for footer clearance */
-  box-sizing: border-box;
-}
-
+      margin-top: 15px;
+      font-style: italic;
+      color: #555;
+      font-size: 0.95rem;
+      text-align: center;
+      padding: 10px 10px 55px 10px;
+      box-sizing: border-box;
+    }
     #quote-container small {
       display: block;
       margin-top: 5px;
       font-size: 0.85rem;
       font-style: normal;
       color: #888;
+    }
+    #comment-section-today {
+      margin-top: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    #comments-today {
+      margin-bottom: 8px;
+      font-size: 0.94rem;
+      color: #7a7a7a;
     }
     footer.footer {
       height: 56px;
@@ -183,9 +192,14 @@
     <div id="attendance-section" style="display:none;">
       <h2>Welcome, <span id="user-name"></span></h2>
       <input type="text" id="name" placeholder="Enter your name" />
-      <textarea id="comment" placeholder="Optional comment" rows="3"></textarea>
-      <button onclick="markAttendance()">Mark Attendance</button>
+      <button id="attendance-mark-btn" onclick="markAttendance()">Mark Attendance</button>
       <button onclick="logout()">Logout</button>
+
+      <div id="comment-section-today" style="display:none;">
+        <div id="comments-today"></div>
+        <textarea id="comment" placeholder="Add a comment" rows="3"></textarea>
+        <button onclick="addCommentToday()">Add Comment</button>
+      </div>
 
       <div id="attendance-list"></div>
       <div id="quote-container">
@@ -218,9 +232,9 @@
     const db = firebase.firestore();
 
     let currentUser = null;
+    let todayAttendanceDocId = null;
 
     const themeToggleBtn = document.getElementById('theme-toggle');
-    // Initialize theme based on localStorage or default
     const initTheme = () => {
       const savedTheme = localStorage.getItem('theme') || 'light';
       if(savedTheme === 'dark'){
@@ -275,7 +289,8 @@
         document.getElementById('attendance-section').style.display = 'block';
         document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
 
-        loadAttendance();
+        await loadAttendance();
+        await showTodayCommentSection();
 
       } catch (error) {
         alert('Login error: ' + error.message);
@@ -285,6 +300,7 @@
 
     function logout() {
       currentUser = null;
+      todayAttendanceDocId = null;
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('attendance-section').style.display = 'none';
       document.getElementById('email').value = '';
@@ -293,6 +309,8 @@
       document.getElementById('attendance-list').innerHTML = '';
       document.getElementById('name').value = '';
       document.getElementById('comment').value = '';
+      document.getElementById('comment-section-today').style.display = 'none';
+      document.getElementById('comments-today').innerHTML = '';
     }
 
     async function markAttendance() {
@@ -308,7 +326,6 @@
         alert('Please enter your name before marking attendance.');
         return;
       }
-      const commentInput = document.getElementById('comment').value.trim();
 
       try {
         const attendanceSnapshot = await db.collection('attendance')
@@ -318,24 +335,25 @@
           .get();
 
         if (!attendanceSnapshot.empty) {
-          alert('Attendance already marked for today.');
+          alert('Attendance already marked for today. You can add more comments below.');
           return;
         }
 
-        await db.collection('attendance').add({
+        const attDocRef = await db.collection('attendance').add({
           userId: currentUser.id,
           email: currentUser.email,
           name: nameInput,
-          comment: commentInput || null,
           date: today,
-          time: now.toLocaleTimeString()
+          time: now.toLocaleTimeString(),
+          comments: []
         });
 
         alert('Attendance marked!');
-        loadAttendance();
+        todayAttendanceDocId = attDocRef.id;
+        await loadAttendance();
+        await showTodayCommentSection();
 
         document.getElementById('name').value = '';
-        document.getElementById('comment').value = '';
 
       } catch(error) {
         console.error('Error marking attendance:', error);
@@ -343,11 +361,87 @@
       }
     }
 
+    async function addCommentToday() {
+      if (!currentUser) return;
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+      const commentInput = document.getElementById('comment').value.trim();
+
+      if (!commentInput) {
+        alert('Please enter a comment.');
+        return;
+      }
+      // Find today's attendance document for this user
+      let docId = todayAttendanceDocId;
+      if (!docId) {
+        // If not cached, look up
+        const snapshot = await db.collection('attendance')
+          .where('userId', '==', currentUser.id)
+          .where('date', '==', today)
+          .limit(1)
+          .get();
+        if (snapshot.empty) {
+          alert('You must mark attendance before commenting for today.');
+          return;
+        }
+        docId = snapshot.docs[0].id;
+        todayAttendanceDocId = docId;
+      }
+
+      try {
+        // Use arrayUnion to add comment as object (timestamped)
+        await db.collection('attendance').doc(docId).update({
+          comments: firebase.firestore.FieldValue.arrayUnion({
+            content: commentInput,
+            time: now.toLocaleTimeString()
+          })
+        });
+        document.getElementById('comment').value = '';
+        await showTodayCommentSection();
+        await loadAttendance();
+
+      } catch(error) {
+        alert('Could not add comment: ' + error.message);
+      }
+    }
+
+    async function showTodayCommentSection() {
+      if (!currentUser) return;
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+
+      const attendanceSection = document.getElementById('comment-section-today');
+      const commentsDiv = document.getElementById('comments-today');
+      attendanceSection.style.display = 'none';
+      commentsDiv.innerHTML = '';
+      todayAttendanceDocId = null;
+
+      const snapshot = await db.collection('attendance')
+        .where('userId', '==', currentUser.id)
+        .where('date', '==', today)
+        .limit(1)
+        .get();
+
+      if (!snapshot.empty) {
+        const attDoc = snapshot.docs[0];
+        const attData = attDoc.data();
+        todayAttendanceDocId = attDoc.id;
+
+        attendanceSection.style.display = 'block';
+        if (attData.comments && attData.comments.length > 0) {
+          commentsDiv.innerHTML = '<strong>Today\'s Comments:</strong><br>' + 
+            attData.comments.map(c => `• ${c.time}: ${c.content}`).join('<br>');
+        } else {
+          commentsDiv.innerHTML = 'No comments yet for today.';
+        }
+      }
+    }
+
     async function loadAttendance() {
       if (!currentUser) return;
 
       const attendanceList = document.getElementById('attendance-list');
-      // attendanceList.innerHTML = '<h3>Your Attendance Records:</h3>';
+      attendanceList.innerHTML = '';
 
       try {
         const recordsSnapshot = await db.collection('attendance')
@@ -357,24 +451,22 @@
           .get();
 
         if (recordsSnapshot.empty) {
-          // attendanceList.innerHTML += '<p>No attendance records found.</p>';
           return;
         }
-
         const ul = document.createElement('ul');
         recordsSnapshot.forEach(doc => {
           const data = doc.data();
+          let commentsString = '';
+          if (data.comments && data.comments.length > 0) {
+            commentsString = ' | Comments: ' + data.comments.map(c => `${c.time}: ${c.content}`).join(' / ');
+          }
           const li = document.createElement('li');
-         li.textContent = `${data.date} at ${data.time} | Name: ${data.name} | Email: ${data.email}` + (data.comment ? ` | Comment: ${data.comment}` : '');
-
+          li.textContent = `${data.date} at ${data.time} | Name: ${data.name} | Email: ${data.email}${commentsString}`;
           ul.appendChild(li);
         });
         attendanceList.appendChild(ul);
 
-      } catch(error) {
-        // console.error('Error loading attendance:', error);
-        // attendanceList.innerHTML = '<p>Could not load attendance records.</p>';
-      }
+      } catch(error) {}
     }
   </script>
 
