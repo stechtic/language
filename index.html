@@ -13,7 +13,7 @@
       --input-border: #ccc;
       --btn-bg: #0275d8;
       --btn-hover-bg: #025aa5;
-      --footer-bg: #f8f9fa;
+      --footer-bg: #fff; /* Match container bg for seamless footer */
       --footer-text: #6c757d;
       --nav-bg: #f8f9fa;
       --nav-text: #212529;
@@ -26,7 +26,7 @@
       --input-border: #555;
       --btn-bg: #003577;
       --btn-hover-bg: #002355;
-      --footer-bg: #1e1e1e;
+      --footer-bg: #1e1e1e; /* Match dark container bg */
       --footer-text: #aaa;
       --nav-bg: #1e1e1e;
       --nav-text: #e0e0e0;
@@ -70,7 +70,7 @@
     main.container {
       flex: 1;
       max-width: 400px;
-      margin: 20px auto 70px auto;
+      margin: 20px auto 0 auto; /* Remove bottom margin */
       background: var(--container-bg);
       border-radius: 10px;
       padding: 20px;
@@ -78,6 +78,9 @@
       box-sizing: border-box;
       width: 90%;
       transition: background-color 0.3s, color 0.3s;
+      /* Ensure container expands fully to bottom */
+      display: flex;
+      flex-direction: column;
     }
     input, button, textarea {
       width: 100%;
@@ -113,6 +116,7 @@
       border-radius: 5px;
       padding: 10px;
       box-sizing: border-box;
+      flex-grow: 1; /* allow expanding inside container */
     }
     #attendance-list ul {
       padding-left: 20px;
@@ -124,7 +128,7 @@
       color: #555;
       font-size: 0.95rem;
       text-align: center;
-      padding: 10px 10px 55px 10px;
+      padding: 10px 10px 55px 10px; /* bottom padding for footer clearance */
       box-sizing: border-box;
     }
     #quote-container small {
@@ -159,10 +163,11 @@
       bottom: 0;
       left: 0;
       transition: background-color 0.3s, color 0.3s;
+      /* Make sure footer background matches container, no line below */
     }
     @media (max-width: 400px) {
       main.container {
-        margin: 10px auto 70px auto;
+        margin: 10px auto 0 auto;
         padding: 15px;
       }
       input, button, textarea {
@@ -389,7 +394,7 @@
       }
 
       try {
-        // Use arrayUnion to add comment as object (timestamped)
+        // Append comment to array
         await db.collection('attendance').doc(docId).update({
           comments: firebase.firestore.FieldValue.arrayUnion({
             content: commentInput,
