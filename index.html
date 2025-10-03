@@ -6,178 +6,174 @@
   <title>Stechtic User Panel</title>
   <style>
     :root {
-  --bg-color: #f5f5f5;
-  --container-bg: #fff;
-  --text-color: #212529;
-  --input-bg: #fff;
-  --input-border: #ccc;
-  --btn-bg: #0275d8;
-  --btn-hover-bg: #025aa5;
-  --footer-bg: #f5f5f5;  /* Match body background */
-  --footer-text: #6c757d;
-  --nav-bg: #f8f9fa;
-  --nav-text: #212529;
-}
-body.dark {
-  --bg-color: #121212;
-  --container-bg: #1e1e1e;
-  --text-color: #e0e0e0;
-  --input-bg: #2a2a2a;
-  --input-border: #555;
-  --btn-bg: #003577;
-  --btn-hover-bg: #002355;
-  --footer-bg: #121212;  /* Match body background */
-  --footer-text: #aaa;
-  --nav-bg: #1e1e1e;
-  --nav-text: #e0e0e0;
-}
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  /* width: 100vw;  <-- REMOVE this line completely */
-  font-family: Arial, sans-serif;
-  background: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-}
-
-nav.navbar {
-  height: 56px;
-  background: var(--nav-bg);
-  color: var(--nav-text);
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  font-weight: 600;
-  font-size: 1.25rem;
-  user-select: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  justify-content: space-between;
-}
-nav button#theme-toggle {
-  background: none;
-  border: none;
-  color: var(--nav-text);
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
-  padding: 6px 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-nav button#theme-toggle:hover {
-  background-color: rgba(0,0,0,0.1);
-}
-main.container {
-  flex: 1;
-  max-width: 400px;
-  margin: 20px auto 0 auto;
-  background: var(--container-bg);
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  box-sizing: border-box;
-  width: 90%;
-  transition: background-color 0.3s, color 0.3s;
-  display: flex;
-  flex-direction: column;
-}
-input, button, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  font-size: 1rem;
-  font-family: inherit;
-  border: 1px solid var(--input-border);
-  border-radius: 5px;
-  box-sizing: border-box;
-  background-color: var(--input-bg);
-  color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-button {
-  background-color: var(--btn-bg);
-  border: none;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-button:hover {
-  background-color: var(--btn-hover-bg);
-}
-#attendance-list {
-  max-height: 200px;
-  overflow-y: auto;
-  text-align: left;
-  margin-top: 15px;
-  font-size: 0.9rem;
-  color: var(--text-color);
-  background-color: var(--container-bg);
-  border-radius: 5px;
-  padding: 10px;
-  box-sizing: border-box;
-  flex-grow: 1;
-}
-#attendance-list ul {
-  padding-left: 20px;
-  margin: 0;
-}
-#quote-container {
-  margin-top: 15px;
-  font-style: italic;
-  color: #555;
-  font-size: 0.95rem;
-  text-align: center;
-  padding: 10px 10px 55px 10px;
-  box-sizing: border-box;
-}
-#quote-container small {
-  display: block;
-  margin-top: 5px;
-  font-size: 0.85rem;
-  font-style: normal;
-  color: #888;
-}
-#comment-section-today {
-  margin-top: 10px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-}
-#comments-today {
-  margin-bottom: 8px;
-  font-size: 0.94rem;
-  color: #7a7a7a;
-}
-footer.footer {
-  height: 56px;
-  background-color: var(--footer-bg);
-  box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  color: var(--footer-text);
-  user-select: none;
-  position: fixed;
-  width: 100%;   /* CHANGE this from 100vw to 100% */
-  bottom: 0;
-  left: 0;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-@media (max-width: 400px) {
-  main.container {
-    margin: 10px auto 0 auto;
-    padding: 15px;
-  }
-  input, button, textarea {
-    font-size: 1.1rem;
-    padding: 12px;
-  }
-}
-
+      --bg-color: #f5f5f5;
+      --container-bg: #fff;
+      --text-color: #212529;
+      --input-bg: #fff;
+      --input-border: #ccc;
+      --btn-bg: #0275d8;
+      --btn-hover-bg: #025aa5;
+      --footer-bg: #f5f5f5;
+      --footer-text: #6c757d;
+      --nav-bg: #f8f9fa;
+      --nav-text: #212529;
+    }
+    body.dark {
+      --bg-color: #121212;
+      --container-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --input-bg: #2a2a2a;
+      --input-border: #555;
+      --btn-bg: #003577;
+      --btn-hover-bg: #002355;
+      --footer-bg: #121212;
+      --footer-text: #aaa;
+      --nav-bg: #1e1e1e;
+      --nav-text: #e0e0e0;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+    }
+    nav.navbar {
+      height: 56px;
+      background: var(--nav-bg);
+      color: var(--nav-text);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      font-weight: 600;
+      font-size: 1.25rem;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      justify-content: space-between;
+    }
+    nav button#theme-toggle {
+      background: none;
+      border: none;
+      color: var(--nav-text);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 6px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    nav button#theme-toggle:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+    main.container {
+      flex: 1;
+      max-width: 400px;
+      margin: 20px auto 0 auto;
+      background: var(--container-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-sizing: border-box;
+      width: 90%;
+      transition: background-color 0.3s, color 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    input, button, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 1px solid var(--input-border);
+      border-radius: 5px;
+      box-sizing: border-box;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    button {
+      background-color: var(--btn-bg);
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: var(--btn-hover-bg);
+    }
+    #attendance-list {
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      background-color: var(--container-bg);
+      border-radius: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+      flex-grow: 1;
+    }
+    #attendance-list ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+    #quote-container {
+      margin-top: 15px;
+      font-style: italic;
+      color: #555;
+      font-size: 0.95rem;
+      text-align: center;
+      padding: 10px 10px 55px 10px;
+      box-sizing: border-box;
+    }
+    #quote-container small {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: #888;
+    }
+    #comment-section-today {
+      margin-top: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    #comments-today {
+      margin-bottom: 8px;
+      font-size: 0.94rem;
+      color: #7a7a7a;
+    }
+    footer.footer {
+      height: 56px;
+      background-color: var(--footer-bg);
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--footer-text);
+      user-select: none;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    @media (max-width: 400px) {
+      main.container {
+        margin: 10px auto 0 auto;
+        padding: 15px;
+      }
+      input, button, textarea {
+        font-size: 1.1rem;
+        padding: 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -209,7 +205,6 @@ footer.footer {
         <button onclick="addCommentToday()">Add Comment</button>
       </div>
 
-      <div id="attendance-list"></div>
       <div id="quote-container">
         "Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." 
         <small>— Thomas Alva Edison</small>
@@ -267,6 +262,23 @@ footer.footer {
       }
     });
 
+    async function loadRandomQuote() {
+      const fallbackQuote = '"Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." <small>— Thomas Alva Edison</small>';
+      try {
+        const response = await fetch('https://zenquotes.io/api/random');
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const quote = data[0];
+          document.getElementById('quote-container').innerHTML = `"${quote.q}"<br><small>— ${quote.a}</small>`;
+        } else {
+          document.getElementById('quote-container').innerHTML = fallbackQuote;
+        }
+      } catch (error) {
+        console.error('Error loading quote:', error);
+        document.getElementById('quote-container').innerHTML = fallbackQuote;
+      }
+    }
+
     async function login() {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
@@ -299,6 +311,7 @@ footer.footer {
 
         await loadAttendance();
         await showTodayCommentSection();
+        await loadRandomQuote();
 
       } catch (error) {
         alert('Login error: ' + error.message);
@@ -319,6 +332,8 @@ footer.footer {
       document.getElementById('comment').value = '';
       document.getElementById('comment-section-today').style.display = 'none';
       document.getElementById('comments-today').innerHTML = '';
+      // Reset quote container on logout to fallback quote
+      document.getElementById('quote-container').innerHTML = '"Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." <small>— Thomas Alva Edison</small>';
     }
 
     async function markAttendance() {
@@ -382,7 +397,6 @@ footer.footer {
       // Find today's attendance document for this user
       let docId = todayAttendanceDocId;
       if (!docId) {
-        // If not cached, look up
         const snapshot = await db.collection('attendance')
           .where('userId', '==', currentUser.id)
           .where('date', '==', today)
@@ -397,7 +411,6 @@ footer.footer {
       }
 
       try {
-        // Append comment to array
         await db.collection('attendance').doc(docId).update({
           comments: firebase.firestore.FieldValue.arrayUnion({
             content: commentInput,
@@ -480,5 +493,3 @@ footer.footer {
 
 </body>
 </html>
-
-
