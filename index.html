@@ -206,7 +206,7 @@
       </div>
 
       <div id="quote-container">
-        "Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." 
+        "Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time."
         <small>— Thomas Alva Edison</small>
       </div>
     </div>
@@ -238,6 +238,7 @@
     let todayAttendanceDocId = null;
 
     const themeToggleBtn = document.getElementById('theme-toggle');
+
     const initTheme = () => {
       const savedTheme = localStorage.getItem('theme') || 'light';
       if(savedTheme === 'dark'){
@@ -247,11 +248,12 @@
         document.body.classList.remove('dark');
         themeToggleBtn.textContent = 'Dark Mode';
       }
-    }
+    };
+
     initTheme();
 
     themeToggleBtn.addEventListener('click', () => {
-      if(document.body.classList.contains('dark')){
+      if(document.body.classList.contains('dark')) {
         document.body.classList.remove('dark');
         themeToggleBtn.textContent = 'Dark Mode';
         localStorage.setItem('theme', 'light');
@@ -264,9 +266,12 @@
 
     async function loadRandomQuote() {
       const fallbackQuote = '"Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." <small>— Thomas Alva Edison</small>';
+      
       try {
-        const response = await fetch('https://zenquotes.io/api/random');
+        // Append a timestamp to avoid browser cache
+        const response = await fetch('https://zenquotes.io/api/random?' + Date.now());
         const data = await response.json();
+
         if (data && data.length > 0) {
           const quote = data[0];
           document.getElementById('quote-container').innerHTML = `"${quote.q}"<br><small>— ${quote.a}</small>`;
@@ -278,6 +283,11 @@
         document.getElementById('quote-container').innerHTML = fallbackQuote;
       }
     }
+
+    // Load a random quote on page load
+    window.addEventListener('load', () => {
+      loadRandomQuote();
+    });
 
     async function login() {
       const email = document.getElementById('email').value.trim();
@@ -311,6 +321,7 @@
 
         await loadAttendance();
         await showTodayCommentSection();
+        // Refresh quote on login too
         await loadRandomQuote();
 
       } catch (error) {
@@ -332,9 +343,10 @@
       document.getElementById('comment').value = '';
       document.getElementById('comment-section-today').style.display = 'none';
       document.getElementById('comments-today').innerHTML = '';
-      // Reset quote container on logout to fallback quote
       document.getElementById('quote-container').innerHTML = '"Our greatest strength lies in giving up, but the certain way to succeed is always to try just one more time." <small>— Thomas Alva Edison</small>';
     }
+
+    // The rest of your original functions remain unchanged: markAttendance, addCommentToday, showTodayCommentSection, loadAttendance
 
     async function markAttendance() {
       if (!currentUser) {
@@ -394,7 +406,6 @@
         alert('Please enter a comment.');
         return;
       }
-      // Find today's attendance document for this user
       let docId = todayAttendanceDocId;
       if (!docId) {
         const snapshot = await db.collection('attendance')
@@ -450,7 +461,7 @@
 
         attendanceSection.style.display = 'block';
         if (attData.comments && attData.comments.length > 0) {
-          commentsDiv.innerHTML = '<strong>Today\'s Comments:</strong><br>' + 
+          commentsDiv.innerHTML = '<strong>Today\'s Comments:</strong><br>' +
             attData.comments.map(c => `• ${c.time}: ${c.content}`).join('<br>');
         } else {
           commentsDiv.innerHTML = 'No comments yet for today.';
